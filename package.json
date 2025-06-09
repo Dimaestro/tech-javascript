@@ -17,7 +17,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "migrate": "sequelize-cli db:migrate --env production"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -27,7 +28,10 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/sequelize": "^10.0.0",
+    "@nestjs/serve-static": "^5.0.3",
     "@nestjs/swagger": "^7.1.17",
+    "axios": "^1.8.4",
+    "axios-retry": "^4.5.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",

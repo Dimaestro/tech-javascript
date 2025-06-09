@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,11 +11,20 @@ import { AuthModule } from '../auth/auth.module';
 import { Watchlist } from '../watchlist/models/watchlist.model';
 import { WatchlistModule } from '../watchlist/watchlist.module';
 import { Token } from '../token/models/token.model';
+import { join } from 'path';
+import { Pixel } from '../pixel/models/pixel.model';
+import { PixelModule } from '../pixel/pixel.module';
+import { Event } from '../event/models/event.model';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../../', 'public'),
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath:
+        process.env.NODE_ENV === 'production' ? '.env' : '.local.env',
       load: [configurations],
     }),
     SequelizeModule.forRootAsync({
@@ -29,9 +39,16 @@ import { Token } from '../token/models/token.model';
         database: configService.get('db_database'),
         synchronize: true,
         autoLoadModels: true,
-        models: [User, Watchlist, Token],
+        models: [User, Watchlist, Token, Pixel, Event],
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       }),
     }),
+    PixelModule,
     UserModule,
     AuthModule,
     WatchlistModule,
